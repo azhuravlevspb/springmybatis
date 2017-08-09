@@ -1,0 +1,58 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.springmybatis.mappers.BookMapper">
+
+    <resultMap id="book" type="com.springmybatis.model.Book">
+        <id property="id" column="id"/>
+        <result property="price" column="price"/>
+        <result property="name" column="name"/>
+        <result property="author_id"/>
+        <!--result property="author"/>
+        <association property="author" javaTyAuthorthor" column="author_id"
+                     select="getAuthorById">
+            <id property="id" column="id"/>
+        </association-->
+    </resultMap>
+
+    <select id="getBooks" resultMap="book">
+        SELECT *
+        FROM books;
+    </select>
+
+    <select id="getBookById" parameterType="int" resultMap="book">
+        SELECT
+            id,
+            author_id,
+            price,
+            name
+        FROM books
+        WHERE id = #{id};
+    </select>
+
+    <insert id="insertBook" parameterType="com.springmybatis.model.Book">
+        <selectKey keyProperty="id" resultType="int" order="BEFORE">
+            SELECT nextVal('books_id_seq') AS id
+        </selectKey>
+        INSERT INTO books (id, author_id, price, name ) VALUES (#{id}, #{author_id}, #{price}, #{name});
+    </insert>
+
+    <update id="updateBook" parameterType="com.springmybatis.model.Book">
+        UPDATE books
+        SET author_id = #{author_id}, name = #{name}, price = #{price}
+        WHERE ID = #{id};
+    </update>
+
+    <delete id="deleteBook" parameterType="int">
+        DELETE FROM books
+        WHERE id = #{id};
+    </delete>
+
+    <select id="getAuthorById" parameterType="int" resultType="com.springmybatis.model.Author">
+        SELECT *
+        FROM authors
+        WHERE id = #{id};
+    </select>
+
+</mapper>
